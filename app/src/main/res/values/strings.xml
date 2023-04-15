@@ -6,4 +6,5 @@
     <string name="password_hint">请输入密码</string>
     <string name="password_default">123456</string>
     <string name="username_default">dqx</string>
+    <string name="hard_loading">努力加载中...</string>
 </resources>

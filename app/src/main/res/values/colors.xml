@@ -8,4 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_color">#4095e5</color>
+    <color name="touch_shadow_color">#99000000</color>
+    <color name="name_text_color">#2D2D2D</color>
+    <color name="grey_text_color">#9E9E9E</color>
 </resources>

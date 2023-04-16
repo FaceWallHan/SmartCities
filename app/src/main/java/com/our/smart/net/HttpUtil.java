@@ -7,6 +7,7 @@ import androidx.annotation.StringDef;
 import androidx.core.util.Consumer;
 
 import com.google.gson.Gson;
+import com.our.smart.bean.post.Login;
 import com.our.smart.utils.LocalKeyUtil;
 
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ public class HttpUtil {
      * */
     private boolean isPost=false;
     private String endUrl="";
-    private JSONObject postMsg;
+    private String postMsg;
 
 
     public static HttpUtil getInstance() {
@@ -58,8 +59,8 @@ public class HttpUtil {
     /**
      * post请求的信息
      * */
-    public HttpUtil inflatePostMsg(JSONObject postMsg) {
-        this.postMsg = postMsg;
+    public HttpUtil inflatePostMsg(Object postMsg) {
+        this.postMsg = new Gson().toJson(postMsg);
         isPost=true;
         return this;
     }
@@ -141,7 +142,7 @@ public class HttpUtil {
      * */
     private Call startPostRequest(){
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), postMsg.toString());
+        RequestBody body = RequestBody.create(MediaType.parse(contentType), postMsg);
         Request request = getRequestBuilder().post(body).build();
         return client.newCall(request);
     }

@@ -11,10 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.our.smart.R;
 import com.our.smart.bean.LoginResponse;
+import com.our.smart.bean.post.Login;
 import com.our.smart.net.EndUrlUtil;
 import com.our.smart.net.HttpUtil;
 import com.our.smart.net.NetStateListener;
 import com.our.smart.ui.MainActivity;
+import com.our.smart.utils.LocalKeyUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,22 +45,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToLogin(String user,String pass){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("username", user);
-            jsonObject.put("password", pass);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Login login = new Login(user,pass);
         HttpUtil.getInstance()
                 .inflateEndUrl(EndUrlUtil.Login)
-                .inflatePostMsg(jsonObject)
+                .inflatePostMsg(login)
                 .startRealRequest(this, LoginResponse.class, new NetStateListener<LoginResponse>() {
                     @Override
                     public void onSuccess(@NonNull LoginResponse response) {
                         String text;
                         if (response.isSuccess()){
                             text="登录成功";
+                            LocalKeyUtil.setToken(response.getToken());
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         }else {

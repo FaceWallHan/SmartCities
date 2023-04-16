@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundRectImageView">
+        <attr name="corner" format="dimension"/>
+        <attr name="showShadow" format="boolean"/>
+        <attr name="shadowColor" format="color"/>
+    </declare-styleable>
+
+</resources>

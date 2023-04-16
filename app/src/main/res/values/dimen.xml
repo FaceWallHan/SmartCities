@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard">10dp</dimen>
+    <dimen name="avatar_size">50dp</dimen>
+    <dimen name="default_margin">10dp</dimen>
+    <dimen name="name_text_size">16dp</dimen>
+    <dimen name="text_size_12">12dp</dimen>
+    <dimen name="text_size_18">18dp</dimen>
+</resources>

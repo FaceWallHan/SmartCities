@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p/>
  * 调用loadedResult(int currentPage, int totalPage, boolean isLoadSuccess, List<T> list)方法
  * 返回加载结果
+ * Created by daihuazhi
  */
 
 public abstract class BasePageableFragment<T> extends BaseFragment {

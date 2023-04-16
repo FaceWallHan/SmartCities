@@ -12,4 +12,9 @@ public class EndUrlUtil {
      * 用户登录
      * */
     public static final String Login="/prod-api/api/login";
+
+    /**
+     * 获取律师列表
+     * */
+    public static final String Lawyer_List="/prod-api/api/lawyer-consultation/lawyer/list";
 }

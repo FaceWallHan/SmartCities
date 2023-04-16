@@ -14,6 +14,10 @@ public class BaseBean {
         return code;
     }
 
+    public boolean isSuccess(){
+        return code==200;
+    }
+
     @NonNull
     @Override
     public String toString() {

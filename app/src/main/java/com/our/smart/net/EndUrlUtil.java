@@ -16,6 +16,11 @@ public class EndUrlUtil {
     public static final String Login="/prod-api/api/login";
 
     /**
+     * 获取律师列表
+     * */
+    public static final String Lawyer_List="/prod-api/api/lawyer-consultation/lawyer/list";
+
+    /**
      * 获取所有广告轮播图
      * */
     public static final String LegalAllBanner="/prod-api/api/lawyer-consultation/ad-banner/list";

@@ -15,6 +15,7 @@ import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.our.smart.R;
+import com.our.smart.ui.lawyer.LawyerListFragment;
 import com.our.smart.bean.ImageCarouselItem;
 import com.our.smart.bean.ImageCarouselResponse;
 import com.our.smart.net.EndUrlUtil;
@@ -115,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.leftMargin = 5;
         circle.setLayoutParams(layoutParams);
         return circle;
+        loadFragment();
+    }
+
+    //加载fragment
+    private void loadFragment() {
+        //加载fragment
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, LawyerListFragment.newInstance(LawyerListFragment.LawyerType.GOOD_RATE))
+                .commit();
     }
 
 }

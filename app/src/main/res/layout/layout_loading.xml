@@ -9,9 +9,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_loading"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:padding="10dp"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:padding="@dimen/standard"
         android:src="@drawable/ic_hourglass" />
 
     <TextView
@@ -21,6 +21,6 @@
         android:layout_marginTop="@dimen/standard"
         android:text="@string/hard_loading"
         android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:textSize="@dimen/sp_18" />
 
 </LinearLayout>

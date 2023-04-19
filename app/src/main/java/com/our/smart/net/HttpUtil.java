@@ -3,15 +3,19 @@ package com.our.smart.net;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 import androidx.core.util.Consumer;
 
 import com.google.gson.Gson;
+import com.our.smart.bean.BaseBean;
 import com.our.smart.utils.LocalKeyUtil;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +32,8 @@ import okhttp3.Response;
 public class HttpUtil {
     private HttpUtil() {}
     private static volatile HttpUtil single;
-    private final String contentType="application/json";
+    private String contentType="application/json";
+    private final StringBuilder builderGetUrl=new StringBuilder();
 
     /**
      * 随便用了个线程池
@@ -54,6 +59,21 @@ public class HttpUtil {
         return single;
     }
 
+    /**
+     * get请求的信息
+     * */
+    public HttpUtil inflateGetMap(@Nullable Map<String,String> map) {
+        builderGetUrl.setLength(0);
+        if (map!=null && !map.isEmpty()){
+            builderGetUrl.append("?");
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                builderGetUrl.append(entry).append("&");
+            }
+            builderGetUrl.deleteCharAt(builderGetUrl.length() - 1);
+        }
+        isPost=false;
+        return this;
+    }
 
     /**
      * post请求的信息
@@ -74,6 +94,16 @@ public class HttpUtil {
         return this;
     }
 
+    public HttpUtil inflateContentTypeUrl(){
+        contentType="application/x-www-form-urlencoded";
+        return this;
+    }
+
+    public HttpUtil inflateContentTypeJSON(){
+        contentType="application/json";
+        return this;
+    }
+
 
     /**
      * 这样判断有很大的局限，lifecycle我觉得更好<br></>
@@ -86,11 +116,10 @@ public class HttpUtil {
     }
 
 
-    public <T> void startRealRequest(Activity activity,Class<T> clazz, NetStateListener<T> listener){
-        service.submit(() -> {
-            startRequest(activity,clazz,listener);
-        });
+    public <T extends BaseBean> void startRealRequest(Activity activity, Class<T> clazz, NetStateListener<T> listener){
+        service.submit(() -> startRequest(activity,clazz,listener));
     }
+
     private  <T> void startRequest(Activity activity,Class<T> clazz, NetStateListener<T> listener){
         if (endUrl.isEmpty()){
             return;
@@ -119,12 +148,10 @@ public class HttpUtil {
     }
 
     private Request.Builder getRequestBuilder(){
-        String baseUrl = "http://124.93.196.45:10001/";
-        String author = "Authorization";
         return new Request.Builder()
-                .addHeader(author, LocalKeyUtil.getToken())
+                .addHeader("Authorization", LocalKeyUtil.getToken())
                 .addHeader("Content_Type", contentType)
-                .url(baseUrl + endUrl);
+                .url(EndUrlUtil.BaseUrl + endUrl+builderGetUrl);
     }
 
     /**

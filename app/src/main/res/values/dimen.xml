@@ -6,4 +6,12 @@
     <dimen name="name_text_size">16dp</dimen>
     <dimen name="text_size_12">12dp</dimen>
     <dimen name="text_size_18">18dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
+    <dimen name="sp_18">18sp</dimen>
 </resources>

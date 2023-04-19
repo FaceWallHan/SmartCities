@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         flipperBanner.getInAnimation().setAnimationListener(inAnimationListener);
         selectGroup = findViewById(R.id.select_group);
         requestBanner();
+        loadFragment();
     }
 
     private void requestBanner() {
@@ -116,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.leftMargin = 5;
         circle.setLayoutParams(layoutParams);
         return circle;
-        loadFragment();
     }
 
     //加载fragment

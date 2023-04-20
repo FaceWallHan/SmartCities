@@ -9,7 +9,7 @@ public class LoginResponse extends BaseBean{
 
     @Override
     public String toString() {
-        return "LoginResponse{" +
+        return super.toString()+"LoginResponse{" +
                 "token='" + token + '\'' +
                 '}';
     }

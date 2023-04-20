@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SmartCities" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.SmartCities" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -20,5 +20,14 @@
         <item name="android:paddingEnd">5dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="SmartEditStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dp_15</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dp_15</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dp_15</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dp_15</item>
     </style>
 </resources>

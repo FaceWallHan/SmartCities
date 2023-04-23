@@ -1,6 +1,8 @@
 package com.our.smart.bean;
 
-public class Lawyer {
+import java.io.Serializable;
+
+public class Lawyer implements Serializable {
 
     private Integer id;
 

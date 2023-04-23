@@ -31,10 +31,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_layout);
         userNameEt = findViewById(R.id.username_et);
         passWordEt = findViewById(R.id.password_et);
-        if (!LocalKeyUtil.getToken().isEmpty()){
-            goMain();
-            return;
-        }
+//        if (!LocalKeyUtil.getToken().isEmpty()){
+//            goMain();
+//            return;
+//        }
         MaterialButton loginBt=findViewById(R.id.login_bt);
         loginBt.setOnClickListener(view -> {
             String user = userNameEt.getText().toString().trim();

@@ -10,4 +10,9 @@
     <string name="lawyer_consultation">律师咨询</string>
     <string name="search_hint">搜索律师</string>
     <string name="todo">TODO</string>
+
+
+    <string name="lay_speciality">法律专长：%s</string>
+    <string name="lay_consult_count">咨询人数：%d</string>
+    <string name="lay_service_count">服务次数：%d</string>
 </resources>

@@ -1,11 +1,6 @@
 package com.our.smart.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +10,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.our.smart.R;
+import com.our.smart.bean.ImageCarouselItem;
+import com.our.smart.bean.ImageCarouselResponse;
 import com.our.smart.bean.LawSpecialtyItem;
 import com.our.smart.bean.LawSpecialtyResponse;
 import com.our.smart.databinding.ActivityMainBinding;
-import com.our.smart.ui.lawyer.LawyerListFragment;
-import com.our.smart.bean.ImageCarouselItem;
-import com.our.smart.bean.ImageCarouselResponse;
 import com.our.smart.net.EndUrlUtil;
 import com.our.smart.net.HttpUtil;
 import com.our.smart.net.NetStateListener;
+import com.our.smart.ui.lawyer.LawyerListFragment;
 import com.our.smart.ui.specialty.LawPagerAdapter;
 import com.our.smart.ui.specialty.LawSpecialtyFragment;
 
@@ -43,32 +41,22 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
         binding.flipperBanner.getInAnimation().setAnimationListener(inAnimationListener);
-        binding.specialPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                changePointStatus(binding.specialPointGroup,position);
-            }
-        });
+        binding.specialPager.registerOnPageChangeCallback(pageChangeCall);
         requestBanner();
         loadFragment();
         requestLawSpecialty();
     }
 
-    private void requestLawSpecialty(){
-        HttpUtil.getInstance()
+    private void requestLawSpecialty() {
+        new HttpUtil()
                 .inflateContentTypeUrl()
                 .inflateEndUrl(EndUrlUtil.LegalExpertise)
                 .inflateGetMap(null)
                 .startRealRequest(this, LawSpecialtyResponse.class, new NetStateListener<LawSpecialtyResponse>() {
                     @Override
                     public void onSuccess(LawSpecialtyResponse response) {
-                        if (!response.isSuccess()) {
-                            Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
                         ArrayList<Fragment> fragments = new ArrayList<>();
-                        int total=response.getRows().size();
+                        int total = response.getRows().size();
                         int pageCount = total / 8;
                         //余数
                         int remainder = total % 8;
@@ -83,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                             fragments.add(LawSpecialtyFragment.newInstance(subList));
                             binding.specialPointGroup.addView(getLinearCircle(i));
                         }
-                        binding.specialPager.setAdapter(new LawPagerAdapter(MainActivity.this,fragments));
+                        binding.specialPager.setAdapter(new LawPagerAdapter(MainActivity.this, fragments));
                     }
 
                     @Override
@@ -94,24 +82,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestBanner() {
-        HttpUtil.getInstance()
+        new HttpUtil()
                 .inflateContentTypeUrl()
                 .inflateEndUrl(EndUrlUtil.LegalAllBanner)
                 .inflateGetMap(null)
                 .startRealRequest(this, ImageCarouselResponse.class, new NetStateListener<ImageCarouselResponse>() {
                     @Override
                     public void onSuccess(ImageCarouselResponse response) {
-                        if (!response.isSuccess()) {
-                            Toast.makeText(MainActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
-                            return;
+                        List<ImageCarouselItem> data = response.getData();
+                        for (int i = 0; i < data.size(); i++) {
+                            ImageCarouselItem item = data.get(i);
+                            binding.flipperBanner.addView(getFlipperItem(item, i));
+                            binding.selectGroup.addView(getLinearCircle(i));
                         }
-                        Log.d("4144444444444444", "onSuccess: _____________"+response);
-//                        List<ImageCarouselItem> data = response.getData();
-//                        for (int i = 0; i < data.size(); i++) {
-//                            ImageCarouselItem item = data.get(i);
-//                            binding.flipperBanner.addView(getFlipperItem(item, i));
-//                            binding.selectGroup.addView(getLinearCircle(i));
-//                        }
                     }
 
                     @Override
@@ -136,6 +119,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onAnimationRepeat(Animation animation) {
 
+        }
+    };
+
+    private final ViewPager2.OnPageChangeCallback pageChangeCall = new ViewPager2.OnPageChangeCallback() {
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            changePointStatus(binding.specialPointGroup, position);
         }
     };
 
@@ -168,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         return circle;
     }
 
-    private void changePointStatus(LinearLayout layout, int position){
+    private void changePointStatus(LinearLayout layout, int position) {
         for (int i = 0; i < layout.getChildCount(); i++) {
             ImageView circle = (ImageView) layout.getChildAt(i);
             int circleDraw = (position == i) ? R.drawable.select_circle : R.drawable.un_select_circle;

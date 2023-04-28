@@ -10,4 +10,6 @@
     <string name="lawyer_consultation">律师咨询</string>
     <string name="search_hint">搜索律师</string>
     <string name="todo">TODO</string>
+    <string name="net_error">请求失败，请检查网络状态</string>
+    <string name="law_specialty">法律专长</string>
 </resources>

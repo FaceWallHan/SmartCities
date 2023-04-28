@@ -1,5 +1,7 @@
 package com.our.smart.bean;
 
+import com.our.smart.net.EndUrlUtil;
+
 public class Lawyer {
 
     private Integer id;
@@ -55,7 +57,7 @@ public class Lawyer {
     }
 
     public String getAvatarUrl() {
-        return avatarUrl;
+        return EndUrlUtil.BaseUrl + avatarUrl;
     }
 
     public void setAvatarUrl(String avatarUrl) {

@@ -8,14 +8,11 @@ import androidx.annotation.StringDef;
 import androidx.core.util.Consumer;
 
 import com.google.gson.Gson;
+import com.our.smart.R;
 import com.our.smart.bean.BaseBean;
-import com.our.smart.bean.post.Login;
 import com.our.smart.utils.LocalKeyUtil;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -31,57 +28,44 @@ import okhttp3.Response;
 
 
 public class HttpUtil {
-    private HttpUtil() {}
-    private static volatile HttpUtil single;
-    private String contentType="application/json";
-    private final StringBuilder builderGetUrl=new StringBuilder();
+    private String contentType = "application/json";
+    private final StringBuilder builderGetUrl = new StringBuilder();
 
     /**
      * 随便用了个线程池
-     * */
-    private static final ExecutorService service= Executors.newFixedThreadPool(50);
+     */
+    private static final ExecutorService service = Executors.newFixedThreadPool(50);
 
     /**
      * 默认为GET请求
-     * */
-    private boolean isPost=false;
-    private String endUrl="";
+     */
+    private boolean isPost = false;
+    private String endUrl = "";
     private String postMsg;
 
 
-    public static HttpUtil getInstance() {
-        if (single==null){
-            synchronized (HttpUtil.class){
-                if (single==null){
-                    single=new HttpUtil();
-                }
-            }
-        }
-        return single;
-    }
-
     /**
      * get请求的信息
-     * */
-    public HttpUtil inflateGetMap(@Nullable Map<String,String> map) {
+     */
+    public HttpUtil inflateGetMap(@Nullable Map<String, String> map) {
         builderGetUrl.setLength(0);
-        if (map!=null && !map.isEmpty()){
+        if (map != null && !map.isEmpty()) {
             builderGetUrl.append("?");
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 builderGetUrl.append(entry).append("&");
             }
             builderGetUrl.deleteCharAt(builderGetUrl.length() - 1);
         }
-        isPost=false;
+        isPost = false;
         return this;
     }
 
     /**
      * post请求的信息
-     * */
+     */
     public HttpUtil inflatePostMsg(Object postMsg) {
         this.postMsg = new Gson().toJson(postMsg);
-        isPost=true;
+        isPost = true;
         return this;
     }
 
@@ -89,76 +73,81 @@ public class HttpUtil {
     /**
      * 需要拼接的具体url,{@link EndUrlUtil}<br>
      * 此处应更严格的限制类型，比如枚举,{@link StringDef}注解等
-     * */
+     */
     public HttpUtil inflateEndUrl(String endUrl) {
         this.endUrl = endUrl;
         return this;
     }
 
-    public HttpUtil inflateContentTypeUrl(){
-        contentType="application/x-www-form-urlencoded";
+    public HttpUtil inflateContentTypeUrl() {
+        contentType = "application/x-www-form-urlencoded";
         return this;
     }
 
-    public HttpUtil inflateContentTypeJSON(){
-        contentType="application/json";
+    public HttpUtil inflateContentTypeJSON() {
+        contentType = "application/json";
         return this;
     }
 
 
     /**
      * 这样判断有很大的局限，lifecycle我觉得更好<br></>
+     *
      * @param action Void为没用的泛型，懒得找/写接口了
-     * */
-    private void actionActivity(Activity activity, Consumer<Void> action){
-        if (!activity.isFinishing()){
+     */
+    private void actionActivity(Activity activity, Consumer<Void> action) {
+        if (!activity.isFinishing()) {
             activity.runOnUiThread(() -> action.accept(null));
         }
     }
 
 
-    public <T extends BaseBean> void startRealRequest(Activity activity, Class<T> clazz, NetStateListener<T> listener){
-        service.submit(() -> startRequest(activity,clazz,listener));
+    public <T extends BaseBean> void startRealRequest(Activity activity, Class<T> clazz, NetStateListener<T> listener) {
+        service.submit(() -> startRequest(activity, clazz, listener));
     }
 
-    private  <T> void startRequest(Activity activity,Class<T> clazz, NetStateListener<T> listener){
-        if (endUrl.isEmpty()){
+    private <T extends BaseBean> void startRequest(Activity activity, Class<T> clazz, NetStateListener<T> listener) {
+        if (endUrl.isEmpty()) {
             return;
         }
-        (isPost?startPostRequest():startGetRequest()).enqueue(new Callback() {
+        (isPost ? startPostRequest() : startGetRequest()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 actionActivity(activity, unused -> listener.onFailure(e));
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
-                    String body= Objects.requireNonNull(response.body()).string();
-                    T value= new Gson().fromJson(body, clazz);
-                    if (value==null){
+                    String body = Objects.requireNonNull(response.body()).string();
+                    T value = new Gson().fromJson(body, clazz);
+                    if (value == null) {
                         actionActivity(activity, unused -> listener.onFailure(new IOException("数据解析失败")));
-                    }else {
-                        actionActivity(activity, unused -> listener.onSuccess(value));
+                    } else {
+                        if (value.isSuccess()) {
+                            actionActivity(activity, unused -> listener.onSuccess(value));
+                        } else {
+                            actionActivity(activity, unused -> listener.onFailure(new IOException(activity.getString(R.string.net_error))));
+                        }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     actionActivity(activity, unused -> listener.onFailure(e));
                 }
             }
         });
     }
 
-    private Request.Builder getRequestBuilder(){
+    private Request.Builder getRequestBuilder() {
         return new Request.Builder()
                 .addHeader("Authorization", LocalKeyUtil.getToken())
                 .addHeader("Content_Type", contentType)
-                .url(EndUrlUtil.BaseUrl + endUrl+builderGetUrl);
+                .url(EndUrlUtil.BaseUrl + endUrl + builderGetUrl);
     }
 
     /**
-     * get请求就自己拼接地址吧
-     * */
-    private Call startGetRequest(){
+     * get请求使用Map拼接
+     */
+    private Call startGetRequest() {
         OkHttpClient client = new OkHttpClient();
         Request request = getRequestBuilder().get().build();
         return client.newCall(request);
@@ -166,8 +155,8 @@ public class HttpUtil {
 
     /**
      * post请求
-     * */
-    private Call startPostRequest(){
+     */
+    private Call startPostRequest() {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(MediaType.parse(contentType), postMsg);
         Request request = getRequestBuilder().post(body).build();

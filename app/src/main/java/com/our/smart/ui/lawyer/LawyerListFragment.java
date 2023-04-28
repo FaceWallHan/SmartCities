@@ -1,7 +1,6 @@
 package com.our.smart.ui.lawyer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -11,17 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.our.smart.bean.Lawyer;
 import com.our.smart.bean.LawyerPage;
-import com.our.smart.bean.LoginResponse;
-import com.our.smart.bean.Page;
 import com.our.smart.net.EndUrlUtil;
 import com.our.smart.net.HttpUtil;
 import com.our.smart.net.NetStateListener;
 import com.our.smart.ui.BasePageableFragment;
-import com.our.smart.ui.MainActivity;
-import com.our.smart.ui.login.LoginActivity;
-import com.our.smart.utils.LocalKeyUtil;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,43 +78,37 @@ public class LawyerListFragment extends BasePageableFragment<Lawyer> {
 
     @Override
     protected void loadPageData(int page) {
-        HttpUtil.getInstance()
-                .inflateEndUrl(getRequest(page))
-                .startRealRequest(requireActivity(), LawyerPage.class,new NetStateListener<LawyerPage>() {
+        new HttpUtil()
+                .inflateEndUrl(EndUrlUtil.Lawyer_List)
+                .inflateGetMap(getRequest(page))
+                .inflateContentTypeJSON()
+                .startRealRequest(requireActivity(), LawyerPage.class, new NetStateListener<LawyerPage>() {
                     @Override
                     public void onSuccess(@NonNull LawyerPage response) {
                         List<Lawyer> lawyers = response.getRows();
-                        loadSuccess(page,response.getTotal(),lawyers);
+                        loadSuccess(page, response.getTotal(), lawyers);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(requireContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
 
-    private String getRequest(int mPage) {
+    private Map<String, String> getRequest(int mPage) {
         Map<String, String> map = new HashMap<>();
         map.put("pageSize", String.valueOf(PAGE_SIZE));
-        if (mLegalExpertiseId != 0){
+        if (mLegalExpertiseId != 0) {
             map.put("legalExpertiseId", String.valueOf(mLegalExpertiseId));
         }
-        if (mName != null){
+        if (mName != null) {
             map.put("name", mName);
         }
         map.put("sort", mType.getSort());
-        StringBuilder builder = new StringBuilder(EndUrlUtil.Lawyer_List);
-        builder.append("?pageNum=");
-        builder.append(mPage);
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            builder.append("&");
-            builder.append(entry.getKey());
-            builder.append("=");
-            builder.append(entry.getValue());
-        }
-        return builder.toString();
+        map.put("pageNum", String.valueOf(mPage));
+        return map;
     }
 
     public void onRefresh() {

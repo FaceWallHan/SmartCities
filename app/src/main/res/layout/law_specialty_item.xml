@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp">
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/specialty_item_iv"
-        tools:src="@drawable/default_law_specialty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/todo" />
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/todo"
+        tools:src="@drawable/default_law_specialty" />
+
     <TextView
         android:id="@+id/specialty_item_desc"
-        android:gravity="center"
-        tools:text="拆迁安置"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:text="拆迁安置" />
 </LinearLayout>
